@@ -867,21 +867,21 @@ module.exports = ( function () {
 
 		var positionAttribute = new THREE.Float32BufferAttribute( buffers.vertex, 3 );
 
-		preTransform.applyToBufferAttribute( positionAttribute );
+		positionAttribute.applyMatrix4( preTransform )
 
-		geo.addAttribute( 'position', positionAttribute );
+		geo.setAttribute( 'position', positionAttribute );
 
 		if ( buffers.colors.length > 0 ) {
 
-			geo.addAttribute( 'color', new THREE.Float32BufferAttribute( buffers.colors, 3 ) );
+			geo.setAttribute( 'color', new THREE.Float32BufferAttribute( buffers.colors, 3 ) );
 
 		}
 
 		if ( skeleton ) {
 
-			geo.addAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( buffers.weightsIndices, 4 ) );
+			geo.setAttribute( 'skinIndex', new THREE.Uint16BufferAttribute( buffers.weightsIndices, 4 ) );
 
-			geo.addAttribute( 'skinWeight', new THREE.Float32BufferAttribute( buffers.vertexWeights, 4 ) );
+			geo.setAttribute( 'skinWeight', new THREE.Float32BufferAttribute( buffers.vertexWeights, 4 ) );
 
 			// used later to bind the skeleton to the model
 			geo.FBX_Deformer = skeleton;
@@ -893,9 +893,10 @@ module.exports = ( function () {
 			var normalAttribute = new THREE.Float32BufferAttribute( buffers.normal, 3 );
 
 			var normalMatrix = new THREE.Matrix3().getNormalMatrix( preTransform );
-			normalMatrix.applyToBufferAttribute( normalAttribute );
 
-			geo.addAttribute( 'normal', normalAttribute );
+			normalAttribute.applyMatrix3( normalMatrix );
+			
+			geo.setAttribute( 'normal', normalAttribute );
 
 		}
 
@@ -911,7 +912,7 @@ module.exports = ( function () {
 
 			}
 
-			geo.addAttribute( name, new THREE.Float32BufferAttribute( buffers.uvs[ i ], 2 ) );
+			geo.setAttribute( name, new THREE.Float32BufferAttribute( buffers.uvs[ i ], 2 ) );
 
 		} );
 
@@ -1391,8 +1392,7 @@ module.exports = ( function () {
 		var positionAttribute = new THREE.Float32BufferAttribute( morphBuffers.vertex, 3 );
 		positionAttribute.name = morphGeoNode.attrName;
 
-		preTransform.applyToBufferAttribute( positionAttribute );
-
+		positionAttribute.applyMatrix4( preTransform )
 		parentGeo.morphAttributes.position.push( positionAttribute );
 
 	}
@@ -1611,7 +1611,7 @@ module.exports = ( function () {
 		} );
 
 		var geometry = new THREE.BufferGeometry();
-		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+		geometry.setAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
 
 		return geometry;
 
